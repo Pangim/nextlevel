@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "people",
+  "info": {
+    "name": "People"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "password": {
+      "type": "password",
+      "private": true,
+      "required": true
+    },
+    "account": {
+      "type": "string",
+      "maxLength": 255,
+      "required": true,
+      "unique": true
+    },
+    "point": {
+      "type": "integer",
+      "required": false,
+      "default": 0
+    }
+  }
+}

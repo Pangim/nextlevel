@@ -1,0 +1,27 @@
+{
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/signup",
+      "handler": "people.signup",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/signin",
+      "handler": "people.signin",
+      "config": {
+        "policies":[]
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/pass",
+      "handler": "people.passToken",
+      "config": {
+        "policies":[]
+    }
+  }]
+}
