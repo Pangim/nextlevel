@@ -2,8 +2,24 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/categories",
-      "handler": "category.find",
+      "path": "/product",
+      "handler": "category.getProduct",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/category",
+      "handler": "category.getCategory",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/product/:product_code",
+      "handler": "category.getProductOne",
       "config": {
         "policies": []
       }
