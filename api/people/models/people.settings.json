@@ -28,6 +28,10 @@
       "type": "integer",
       "required": false,
       "default": 0
+    },
+    "orderuser_id": {
+      "via": "people_id",
+      "collection": "orderuser"
     }
   }
 }

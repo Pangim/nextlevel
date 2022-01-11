@@ -21,14 +21,18 @@
       "type": "string"
     },
     "price": {
-      "type": "biginteger"
+      "type": "integer"
     },
     "quantity": {
       "type": "integer"
     },
     "category_id": {
-      "via": "product",
-      "model": "category"
+      "model": "category",
+      "via": "product"
+    },
+    "orderdetail_id": {
+      "collection": "orderdetail",
+      "via": "product_id"
     }
   }
 }

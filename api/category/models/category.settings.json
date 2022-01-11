@@ -13,8 +13,8 @@
       "type": "string"
     },
     "product": {
-      "collection": "product",
-      "via": "category_id"
+      "via": "category_id",
+      "collection": "product"
     }
   }
 }
