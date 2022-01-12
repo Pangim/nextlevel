@@ -1,3 +1,3 @@
 # strapi
-## 포스트맨 주소
+## 포스트맨 테스트
 https://documenter.getpostman.com/view/17715735/UVXdNyCH
