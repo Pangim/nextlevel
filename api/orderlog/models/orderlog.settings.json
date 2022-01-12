@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orderlogs",
+  "info": {
+    "name": "orderlog"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "type": {
+      "type": "string"
+    },
+    "product_code": {
+      "type": "string"
+    },
+    "order_code": {
+      "type": "string"
+    },
+    "product_point": {
+      "type": "integer"
+    },
+    "user_point": {
+      "type": "integer"
+    },
+    "balance": {
+      "type": "integer"
+    },
+    "product_quantity": {
+      "type": "integer"
+    },
+    "error_log": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "refund": {
+      "type": "string"
+    }
+  }
+}

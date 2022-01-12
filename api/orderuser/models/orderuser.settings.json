@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orderusers",
+  "info": {
+    "name": "orderuser"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "people_id": {
+      "model": "people",
+      "via": "orderuser_id"
+    },
+    "address": {
+      "type": "string"
+    },
+    "receiver_name": {
+      "type": "string"
+    },
+    "receiver_phone": {
+      "type": "string"
+    },
+    "orderdetail_id": {
+      "collection": "orderdetail",
+      "via": "orderuser_id"
+    }
+  }
+}

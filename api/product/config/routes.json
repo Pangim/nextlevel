@@ -1,51 +1,35 @@
 {
   "routes": [
     {
-      "method": "GET",
-      "path": "/products",
-      "handler": "product.find",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "GET",
-      "path": "/products/count",
-      "handler": "product.count",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "GET",
-      "path": "/products/:id",
-      "handler": "product.findOne",
-      "config": {
-        "policies": []
-      }
-    },
-    {
       "method": "POST",
-      "path": "/products",
-      "handler": "product.create",
+      "path": "/order",
+      "handler": "product.postOrder",
       "config": {
-        "policies": []
+        "policies": ["decorator"]
       }
     },
     {
-      "method": "PUT",
-      "path": "/products/:id",
-      "handler": "product.update",
+      "method": "GET",
+      "path": "/order/detail",
+      "handler": "product.getOrderDetail",
       "config": {
-        "policies": []
+        "policies": ["decorator"]
       }
     },
     {
-      "method": "DELETE",
-      "path": "/products/:id",
-      "handler": "product.delete",
+      "method": "PATCH",
+      "path": "/order/refund/:order_code",
+      "handler": "product.patchRefund",
       "config": {
-        "policies": []
+        "policies": ["decorator"]
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/log",
+      "handler": "product.getMyLog",
+      "config": {
+        "policies": ["decorator"]
       }
     }
   ]

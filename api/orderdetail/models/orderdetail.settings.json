@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orderdetails",
+  "info": {
+    "name": "orderdetail"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "product_quantity": {
+      "type": "integer"
+    },
+    "order_status": {
+      "type": "string"
+    },
+    "order_number": {
+      "type": "string"
+    },
+    "product_id": {
+      "via": "orderdetail_id",
+      "model": "product"
+    },
+    "orderuser_id": {
+      "via": "orderdetail_id",
+      "model": "orderuser"
+    }
+  }
+}
