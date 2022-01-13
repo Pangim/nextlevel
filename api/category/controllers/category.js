@@ -57,7 +57,7 @@ const getProductOne = async ctx => {
             "상품 이름": product.name,
             "상품 정보": product.information,
             "상품 가격": product.price,
-            "상품 개수": product.quantitiy
+            "상품 개수": product.quantity
         }
 
         return responseParser({
