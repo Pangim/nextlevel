@@ -15,13 +15,6 @@
       "config": {
         "policies":[]
       }
-    },
-    {
-      "method": "GET",
-      "path": "/pass",
-      "handler": "people.passToken",
-      "config": {
-        "policies":[]
     }
-  }]
+  ]
 }
