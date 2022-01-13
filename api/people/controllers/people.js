@@ -1,82 +1,61 @@
 'use strict';
-const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken")
-const saltRounds = 10;
-/**
- * Read the documentation (https://strapi.io/documentation/v3.x/concepts/controllers.html#core-controllers)
- * to customize this controller
- */
+
+const jwt = require("jsonwebtoken");
 
 const signup = async ctx => {
+    const { name, password, account } = ctx.request.body;
+    const { responseParser } = strapi.services.common
+    const { errorHandler, SIGN_REQUEST_ERROR } = require("../services/error")
+    const { checkAccount, checkEmail, checkPassword, hash } = strapi.services.people
+    const { DUPLICATED_ACCOUNT, INVALID_EMAIL, INVALID_PASSWORD } = SIGN_REQUEST_ERROR
+    const checkedEmail = await checkEmail(account)
+    const checkedPassword = await checkPassword(password)
+    const checkedAccount = await checkAccount(account)
+    const hashPassword = await hash(password)
+    
+
     try {
-        const { name, password, account } = ctx.request.body;
-        const salt = await bcrypt.genSalt(saltRounds);
-        const hash = await bcrypt.hash(password, salt);
+        if (!checkedEmail) throw Error(INVALID_EMAIL)
+        if (!checkedPassword) throw Error(INVALID_PASSWORD)
+        if (checkedAccount) throw Error(DUPLICATED_ACCOUNT)
         await strapi.query('people').create({
             name: name,
-            password: hash,
+            password: hashPassword,
             account: account,
             point : 0
         });
-        ctx.send({
-            message: "Created!"
+        return responseParser({
+            message: "Created account!"
         }, 201)
     } catch(error) {
         console.log(error)
+        return ctx.badRequest(errorHandler(error.message))
     }
 }
 
 const signin = async ctx => {
+    const { account, password } = ctx.request.body;
+    const { responseParser } = strapi.services.common
+    const { errorHandler, SIGN_REQUEST_ERROR } = require("../services/error")
+    const { compareAccount, comparePassword } = strapi.services.people
+    const { DOES_NOT_EXIST_ACCOUNT, INCORRECT_PASSWORD } = SIGN_REQUEST_ERROR
+    const user = await compareAccount(account)
+
     try {
-        const { account, password } = ctx.request.body;
-        const user = await strapi.query("people").findOne({ account: account });
-        if (user) {
-            const pass = await bcrypt.compare(password, user.password);
-            if(pass) {
-                const accessToken = jwt.sign({ id : user.id }, process.env.secretkey, {
-                        expiresIn: 60*60
-                    });
-                ctx.send({
-                    message: accessToken
-                }, 200)
-            } else {
-                ctx.send({
-                    message: "wrong password"
-                }, 400)
-            }
-        } else if(!user) {
-            ctx.send({
-                message: "wrond account"
-            }, 400)
-        }
+        if (user === null) throw Error(DOES_NOT_EXIST_ACCOUNT)
+        const CheckedPassword = await comparePassword(password, user)
+
+        if (!CheckedPassword) throw Error(INCORRECT_PASSWORD)
+        const accessToken = jwt.sign({ id : user.id }, process.env.secretkey, {
+                expiresIn: 60*60
+        })
+        return responseParser({ 
+            accessToken 
+        })
     } catch(error) {
         console.log(error)
-        ctx.send({
-            message: "Key Error!"
-        }, 400)
+        ctx.badRequest(errorHandler(error.message))
     }
 }
 
-const passToken = async ctx => {
-    try {
-        const token = await ctx.request.header.token
-        jwt.verify(token,process.env.secretkey,(err,encode)=>{
-            if(err){
-                console.log(err)
-                ctx.send({
-                    message: "invalid token"
-                }, 400)
-            } else {
-                console.log(encode);
-                ctx.request.user = encode
-                ctx.send({
-                    message: "ok"
-                }, 200)
-            }
-        });
-    } catch(error) {
-        console.log(error)
-    }
-}
-
-module.exports = { passToken, signup, signin };
+module.exports = { signup, signin };
