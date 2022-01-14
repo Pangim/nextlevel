@@ -3,7 +3,7 @@
     {
       "method": "GET",
       "path": "/product",
-      "handler": "category.getProduct",
+      "handler": "category.getProducts",
       "config": {
         "policies": []
       }
