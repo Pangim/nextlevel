@@ -1,21 +1,24 @@
 const responseParser = (data, status) => {
     return {
         statusCode: status,
-        data: data
-    }
-}
+        data: data,
+    };
+};
 
 const errorHandlerV3 = (api, errorHandle, message) => {
-    const error = errorHandle[message]
+    const error = errorHandle[message];
     if (!error) {
         return {
             id: `Out.of.control.error`,
             message,
-            api
-        }
+            api,
+        };
     }
 
-    return error
-}
+    return error;
+};
 
-module.exports = { errorHandlerV3, responseParser }
+module.exports = {
+    errorHandlerV3,
+    responseParser,
+};
