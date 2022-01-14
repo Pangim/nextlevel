@@ -1,29 +1,37 @@
 'use strict';
 
 const jwt = require("jsonwebtoken");
+const { errorHandler, SIGN_REQUEST_ERROR } = require("../services/error")
+const { responseParser } = require("../../common/services/common")
+const {
+    createUser,
+    checkAccount,
+    checkEmail,
+    checkPassword,
+    hash,
+    comparePassword
+} = require("../services//people")
 
 const signup = async ctx => {
-    const { name, password, account } = ctx.request.body;
-    const { responseParser } = strapi.services.common
-    const { errorHandler, SIGN_REQUEST_ERROR } = require("../services/error")
-    const { checkAccount, checkEmail, checkPassword, hash } = strapi.services.people
-    const { DUPLICATED_ACCOUNT, INVALID_EMAIL, INVALID_PASSWORD } = SIGN_REQUEST_ERROR
-    const checkedEmail = await checkEmail(account)
-    const checkedPassword = await checkPassword(password)
-    const checkedAccount = await checkAccount(account)
-    const hashPassword = await hash(password)
-    
+    const {
+        name,
+        password,
+        account
+    } = ctx.request.body;
+    const {
+        DUPLICATED_ACCOUNT,
+        INVALID_EMAIL,
+        INVALID_PASSWORD
+    } = SIGN_REQUEST_ERROR
 
     try {
-        if (!checkedEmail) throw Error(INVALID_EMAIL)
-        if (!checkedPassword) throw Error(INVALID_PASSWORD)
-        if (checkedAccount) throw Error(DUPLICATED_ACCOUNT)
-        await strapi.query('people').create({
-            name: name,
-            password: hashPassword,
-            account: account,
-            point : 0
-        });
+        if (!await checkEmail(account)) throw Error(INVALID_EMAIL)
+        if (!await checkPassword(password)) throw Error(INVALID_PASSWORD)
+        if (await checkAccount(account)) throw Error(DUPLICATED_ACCOUNT)
+
+        const hashPassword = await hash(password)
+        await createUser(name, hashPassword, account)
+        
         return responseParser({
             message: "Created account!"
         }, 201)
@@ -34,19 +42,21 @@ const signup = async ctx => {
 }
 
 const signin = async ctx => {
-    const { account, password } = ctx.request.body;
-    const { responseParser } = strapi.services.common
-    const { errorHandler, SIGN_REQUEST_ERROR } = require("../services/error")
-    const { compareAccount, comparePassword } = strapi.services.people
-    const { DOES_NOT_EXIST_ACCOUNT, INCORRECT_PASSWORD } = SIGN_REQUEST_ERROR
-    const user = await compareAccount(account)
+    const {
+        account,
+        password
+    } = ctx.request.body;
+    const {
+        DOES_NOT_EXIST_ACCOUNT,
+        INCORRECT_PASSWORD
+    } = SIGN_REQUEST_ERROR
+    const user = await checkAccount(account)
 
     try {
         if (user === null) throw Error(DOES_NOT_EXIST_ACCOUNT)
-        const CheckedPassword = await comparePassword(password, user)
+        if (!await comparePassword(password, user)) throw Error(INCORRECT_PASSWORD)
 
-        if (!CheckedPassword) throw Error(INCORRECT_PASSWORD)
-        const accessToken = jwt.sign({ id : user.id }, process.env.secretkey, {
+        const accessToken = jwt.sign({ id: user.id }, process.env.secretkey, {
                 expiresIn: 60*60
         })
         return responseParser({ 
