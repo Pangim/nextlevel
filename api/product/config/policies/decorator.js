@@ -1,10 +1,9 @@
 const jwt = require("jsonwebtoken")
-
+const { errorHandler } = require("../../../common/services/tokenerror")
 module.exports = async (ctx, next) => {
-    const { errorHandler } = strapi.services.tokenerror
+    const token = await ctx.request.header.token
     try {
-        const token = await ctx.request.header.token
-        jwt.verify(token,process.env.secretkey,(err,encode)=>{
+        jwt.verify(token,process.env.secretkey,(err, encode)=>{
             if(err){
                 throw Error(err)
             } else {
