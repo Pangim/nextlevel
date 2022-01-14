@@ -3,41 +3,41 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-/**
- * Read the documentation (https://strapi.io/documentation/v3.x/concepts/services.html#core-services)
- * to customize this service
- */
-const checkAccount = async account => {
-    const user = await strapi.query('people').findOne({account: account})
-    return user
-}
+const createUser = async (name, password, account)=> 
+strapi.query('people').create({
+    name,
+    password,
+    account,
+    point : 0
+})
 
-const compareAccount = async account => {
-    const user = await strapi.query("people").findOne({ account: account });
-    return user
-}
+const checkAccount = async account => 
+    strapi.query('people').findOne({ account: account })
 
-const comparePassword = async (password, user) => {
-    const comparePassword = await bcrypt.compare(password, user.password);
-    return comparePassword
-}
+const comparePassword = async (password, user) => 
+    bcrypt.compare(password, user.password);
 
 const hash = async password => {
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(saltRounds)
+    const hash = await bcrypt.hash(password, salt)
     return hash
 }
 
 const checkEmail = async email => {
     const emailRegex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-    const checkedEmail = emailRegex.test(email)
-    return checkedEmail
+    return emailRegex.test(email)
 }
 
 const checkPassword = async email => {
     const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    const checkedPassword = passwordRegex.test(email)
-    return checkedPassword
+    return passwordRegex.test(email)
 }
 
-module.exports = { checkAccount, hash, checkEmail, checkPassword, compareAccount, comparePassword };
+module.exports = {
+    checkAccount,
+    hash,
+    checkEmail,
+    checkPassword,
+    comparePassword,
+    createUser
+};
