@@ -1,41 +1,50 @@
 'use strict';
 
-const limit = 5
+const { responseParser } = require('../../common/services/common')
+const { errorHandler, REQUEST_CATEGORY_ERROR } = require('../services/error')
+const {
+    findCategory,
+    findProducts,
+    getProduct
+} = require('../services/category')
 
-const getCategory = async ctx => {
-    const { findCategory } = strapi.services.category
-    const { responseParser } = strapi.services.common 
+const getCategory = async () => { 
     const categories = await findCategory()
+
     try {
-        const categoryName = await categories.map( category => { 
-            return { name : category.name }
+        const categoryData = await categories.map(category => { 
+            return {
+                name : category.name
+            }
         })
         
         return responseParser({
-            categoryName
+            categoryData
         })
     } catch(error) {
         console.log(error)
+        return ctx.badRequest(errorHandler(error.message))
     }
 }
 
-const getProduct = async ctx => {
+const getProducts = async ctx => {
     const { name, page } = ctx.request.query
-    const { findProduct }  = strapi.services.category
-    const { responseParser } = strapi.services.common
-    const { errorHandler, REQUEST_CATEGORY_ERROR } = require('../services/error')
     const { NOT_FOUND_PRODUCTS } = REQUEST_CATEGORY_ERROR
+    const limit = 5
     const offset = limit * page
-    const getProduct = await findProduct(name)
-    const products = await getProduct.product.slice(offset-limit, offset).map( product => {
-        return {name: product.name, pirce: product.price + "원" }
+    const products = await findProducts(name)
+    const productData = await products.product.slice(offset-limit, offset).map(product => {
+        return {
+            name: product.name,
+            pirce: product.price + "Point"
+        }
     })
 
     try {
-        if (products.length === 0) throw Error(NOT_FOUND_PRODUCTS)
+        if (productData.length === 0) throw Error(NOT_FOUND_PRODUCTS)
 
         return responseParser({
-            products
+            productData
         })
     } catch(error) {
         console.log(error)
@@ -45,9 +54,6 @@ const getProduct = async ctx => {
 
 const getProductOne = async ctx => {
     const productCode = ctx.params.product_code
-    const { getProduct } = strapi.services.category
-    const { responseParser } = strapi.services.common
-    const { errorHandler, REQUEST_CATEGORY_ERROR } = require('../services/error')
     const { NOT_FOUND_PRODUCT } = REQUEST_CATEGORY_ERROR
     const product = await getProduct(productCode)
 
@@ -69,5 +75,8 @@ const getProductOne = async ctx => {
     }
 }
 
-
-module.exports = { getProduct, getCategory, getProductOne };
+module.exports = {
+    getProducts,
+    getCategory,
+    getProductOne
+};

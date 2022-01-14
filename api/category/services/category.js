@@ -1,17 +1,17 @@
 'use strict';
 
- const findProduct = async name => {
-        const getPorduct = await strapi.query('category').findOne({name: name}, ['product'])
-        return getPorduct
-    }
+const findProducts = async name => 
+    strapi.query('category').findOne({name: name}, ['product'])
 
-const findCategory = async => {
-    const categoryName = strapi.query('category').find()
-    return categoryName
-}
+const findCategory = async () => 
+    strapi.query('category').find()
 
-const getProduct = async productCode => {
-    const product = await strapi.query('product').findOne({product_code: productCode},[])
-    return product
-}
-module.exports = { findProduct, findCategory, getProduct };
+const getProduct = async productCode => 
+    strapi.query('product').findOne({product_code: productCode},[])
+
+
+module.exports = {
+    findProducts,
+    findCategory,
+    getProduct
+};
